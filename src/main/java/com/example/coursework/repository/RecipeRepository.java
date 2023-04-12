@@ -11,10 +11,10 @@ import java.util.Optional;
 @Repository
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
-    List<Recipe> findAllByUserOrderByCreatedDateDesc(UserModel user);
+    List<Recipe> findAllByUserOrderByDateCreatedDesc(UserModel user);
 
-    List<Recipe> findAllByOrderByCreatedDateDesc();
+    List<Recipe> findAllByOrderByDateCreatedDesc();
 
-    Optional<Recipe> findPostByIdAndUser(Long id, UserModel user);
+    Optional<Recipe> findRecipeByRecipeIdAndUser(Long recipeId, UserModel user);
 
 }
