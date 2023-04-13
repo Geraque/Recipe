@@ -1,8 +1,7 @@
 package com.example.coursework.web;
-/*
-import com.example.demo.entity.ImageModel;
-import com.example.demo.payload.response.MessageResponse;
-import com.example.demo.services.ImageUploadService;
+import com.example.coursework.entity.ImageModel;
+import com.example.coursework.payload.response.MessageResponse;
+import com.example.coursework.services.ImageUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,11 +27,11 @@ public class ImageUploadController {
         return ResponseEntity.ok(new MessageResponse("Image Uploaded Successfully"));
     }
 
-    @PostMapping("/{postId}/upload")
-    public ResponseEntity<MessageResponse> uploadImageToPost(@PathVariable("postId") String postId,
+    @PostMapping("/{recipeId}/upload")
+    public ResponseEntity<MessageResponse> uploadImageToRecipe(@PathVariable("recipeId") String recipeId,
                                                              @RequestParam("file") MultipartFile file,
                                                              Principal principal) throws IOException {
-        imageUploadService.uploadImageToPost(file, principal, Long.parseLong(postId));
+        imageUploadService.uploadImageToRecipe(file, principal, Long.parseLong(recipeId));
         return ResponseEntity.ok(new MessageResponse("Image Uploaded Successfully"));
     }
 
@@ -42,12 +41,11 @@ public class ImageUploadController {
         return new ResponseEntity<>(userImage, HttpStatus.OK);
     }
 
-    @GetMapping("/{postId}/image")
-    public ResponseEntity<ImageModel> getImageToPost(@PathVariable("postId") String postId) {
-        ImageModel postImage = imageUploadService.getImageToPost(Long.parseLong(postId));
-        return new ResponseEntity<>(postImage, HttpStatus.OK);
+    @GetMapping("/{recipeId}/image")
+    public ResponseEntity<ImageModel> getImageToRecipe(@PathVariable("recipeId") String recipeId) {
+        ImageModel recipeImage = imageUploadService.getImageToRecipe(Long.parseLong(recipeId));
+        return new ResponseEntity<>(recipeImage, HttpStatus.OK);
     }
 
 }
 
- */

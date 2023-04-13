@@ -1,9 +1,8 @@
 package com.example.coursework.web;
-/*
 import com.example.coursework.dto.UserDTO;
 import com.example.coursework.entity.UserModel;
 import com.example.coursework.facade.UserFacade;
-import com.example.c    .services.UserService;
+import com.example.coursework.services.UserService;
 import com.example.coursework.validations.ResponseErrorValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,16 +28,16 @@ public class UserController {
 
     @GetMapping("/")
     public ResponseEntity<UserDTO> getCurrentUser(Principal principal) {
-        User user = userService.getCurrentUser(principal);
-        UserDTO userDTO = userFacade.userToUserDTO(user);
+        UserModel user = userService.getCurrentUser(principal);
+        UserDTO userDTO = userFacade.userModelToUserDTO(user);
 
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserDTO> getUserProfile(@PathVariable("userId") String userId) {
-        User user = userService.getUserById(Long.parseLong(userId));
-        UserDTO userDTO = userFacade.userToUserDTO(user);
+        UserModel user = userService.getUserById(Long.parseLong(userId));
+        UserDTO userDTO = userFacade.userModelToUserDTO(user);
 
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
@@ -48,11 +47,9 @@ public class UserController {
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(bindingResult);
         if (!ObjectUtils.isEmpty(errors)) return errors;
 
-        User user = userService.updateUser(userDTO, principal);
+        UserModel user = userService.updateUser(userDTO, principal);
 
-        UserDTO userUpdated = userFacade.userToUserDTO(user);
+        UserDTO userUpdated = userFacade.userModelToUserDTO(user);
         return new ResponseEntity<>(userUpdated, HttpStatus.OK);
     }
 }
-
- */
