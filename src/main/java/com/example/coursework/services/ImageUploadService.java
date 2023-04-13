@@ -1,12 +1,11 @@
 package com.example.coursework.services;
-/*
-import com.example.demo.entity.ImageModel;
-import com.example.demo.entity.Post;
-import com.example.demo.entity.User;
-import com.example.demo.exceptions.ImageNotFoundException;
-import com.example.demo.repository.ImageRepository;
-import com.example.demo.repository.PostRepository;
-import com.example.demo.repository.UserRepository;
+import com.example.coursework.entity.ImageModel;
+import com.example.coursework.entity.Recipe;
+import com.example.coursework.entity.UserModel;
+import com.example.coursework.exceptions.ImageNotFoundException;
+import com.example.coursework.repository.ImageRepository;
+import com.example.coursework.repository.RecipeRepository;
+import com.example.coursework.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,52 +29,52 @@ public class ImageUploadService {
 
     private ImageRepository imageRepository;
     private UserRepository userRepository;
-    private PostRepository postRepository;
+    private RecipeRepository recipeRepository;
 
     @Autowired
-    public ImageUploadService(ImageRepository imageRepository, UserRepository userRepository, PostRepository postRepository) {
+    public ImageUploadService(ImageRepository imageRepository, UserRepository userRepository, RecipeRepository recipeRepository) {
         this.imageRepository = imageRepository;
         this.userRepository = userRepository;
-        this.postRepository = postRepository;
+        this.recipeRepository = recipeRepository;
     }
 
     public ImageModel uploadImageToUser(MultipartFile file, Principal principal) throws IOException {
-        User user = getUserByPrincipal(principal);
+        UserModel user = getUserByPrincipal(principal);
         LOG.info("Uploading image profile to User {}", user.getUsername());
 
-        ImageModel userProfileImage = imageRepository.findByUserId(user.getId()).orElse(null);
+        ImageModel userProfileImage = imageRepository.findByUserId(user.getUserId()).orElse(null);
         if (!ObjectUtils.isEmpty(userProfileImage)) {
             imageRepository.delete(userProfileImage);
         }
 
         ImageModel imageModel = new ImageModel();
-        imageModel.setUserId(user.getId());
+        imageModel.setUserId(user.getUserId());
         imageModel.setImageBytes(compressBytes(file.getBytes()));
         imageModel.setName(file.getOriginalFilename());
         return imageRepository.save(imageModel);
     }
 
-    public ImageModel uploadImageToPost(MultipartFile file, Principal principal, Long postId) throws IOException {
-        User user = getUserByPrincipal(principal);
-        Post post = user.getPosts()
+    public ImageModel uploadImageToRecipe(MultipartFile file, Principal principal, Long recipeId) throws IOException {
+        UserModel user = getUserByPrincipal(principal);
+        Recipe recipe = user.getRecipes()
                 .stream()
-                .filter(p -> p.getId().equals(postId))
-                .collect(toSinglePostCollector());
+                .filter(p -> p.getRecipeId().equals(recipeId))
+                .collect(toSingleRecipeCollector());
 
         ImageModel imageModel = new ImageModel();
-        imageModel.setPostId(post.getId());
+        imageModel.setRecipeId(recipe.getRecipeId());
         imageModel.setImageBytes(file.getBytes());
         imageModel.setImageBytes(compressBytes(file.getBytes()));
         imageModel.setName(file.getOriginalFilename());
-        LOG.info("Uploading image to Post {}", post.getId());
+        LOG.info("Uploading image to Recipe {}", recipe.getRecipeId());
 
         return imageRepository.save(imageModel);
     }
 
     public ImageModel getImageToUser(Principal principal) {
-        User user = getUserByPrincipal(principal);
+        UserModel user = getUserByPrincipal(principal);
 
-        ImageModel imageModel = imageRepository.findByUserId(user.getId()).orElse(null);
+        ImageModel imageModel = imageRepository.findByUserId(user.getUserId()).orElse(null);
         if (!ObjectUtils.isEmpty(imageModel)) {
             imageModel.setImageBytes(decompressBytes(imageModel.getImageBytes()));
         }
@@ -83,9 +82,9 @@ public class ImageUploadService {
         return imageModel;
     }
 
-    public ImageModel getImageToPost(Long postId) {
-        ImageModel imageModel = imageRepository.findByPostId(postId)
-                .orElseThrow(() -> new ImageNotFoundException("Cannot find image to Post: " + postId));
+    public ImageModel getImageToRecipe(Long recipeId) {
+        ImageModel imageModel = imageRepository.findByRecipeId(recipeId)
+                .orElseThrow(() -> new ImageNotFoundException("Cannot find image to Recipe: " + recipeId));
         if (!ObjectUtils.isEmpty(imageModel)) {
             imageModel.setImageBytes(decompressBytes(imageModel.getImageBytes()));
         }
@@ -129,14 +128,14 @@ public class ImageUploadService {
         return outputStream.toByteArray();
     }
 
-    private User getUserByPrincipal(Principal principal) {
+    private UserModel getUserByPrincipal(Principal principal) {
         String username = principal.getName();
-        return userRepository.findUserByUsername(username)
+        return userRepository.findUserModelByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found with username " + username));
 
     }
 
-    private <T> Collector<T, ?, T> toSinglePostCollector() {
+    private <T> Collector<T, ?, T> toSingleRecipeCollector() {
         return Collectors.collectingAndThen(
                 Collectors.toList(),
                 list -> {
@@ -148,5 +147,3 @@ public class ImageUploadService {
         );
     }
 }
-
- */

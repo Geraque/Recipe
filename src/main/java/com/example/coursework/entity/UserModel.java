@@ -19,10 +19,8 @@ public class UserModel implements UserDetails {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "user_id", nullable = false)
     private Long userId;
-
     @Column(nullable = false)
     private String name;
-
     @Column(nullable = false)
     private String lastname;
     @Column(unique = true, updatable = false)

@@ -50,6 +50,5 @@ public class Recipe {
     protected void onCreate()
     {
         this.dateCreated = LocalDateTime.now();
-        this.likes = 0;
     }
 }

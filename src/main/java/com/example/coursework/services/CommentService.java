@@ -1,13 +1,12 @@
 package com.example.coursework.services;
-/*
-import com.example.demo.dto.CommentDTO;
-import com.example.demo.entity.Comment;
-import com.example.demo.entity.Post;
-import com.example.demo.entity.User;
-import com.example.demo.exceptions.PostNotFoundException;
-import com.example.demo.repository.CommentRepository;
-import com.example.demo.repository.PostRepository;
-import com.example.demo.repository.UserRepository;
+import com.example.coursework.dto.CommentDTO;
+import com.example.coursework.entity.Comment;
+import com.example.coursework.entity.Recipe;
+import com.example.coursework.entity.UserModel;
+import com.example.coursework.exceptions.RecipeNotFoundException;
+import com.example.coursework.repository.CommentRepository;
+import com.example.coursework.repository.RecipeRepository;
+import com.example.coursework.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,35 +22,34 @@ public class CommentService {
     public static final Logger LOG = LoggerFactory.getLogger(CommentService.class);
 
     private final CommentRepository commentRepository;
-    private final PostRepository postRepository;
+    private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
 
     @Autowired
-    public CommentService(CommentRepository commentRepository, PostRepository postRepository, UserRepository userRepository) {
+    public CommentService(CommentRepository commentRepository, RecipeRepository recipeRepository, UserRepository userRepository) {
         this.commentRepository = commentRepository;
-        this.postRepository = postRepository;
+        this.recipeRepository = recipeRepository;
         this.userRepository = userRepository;
     }
 
-    public Comment saveComment(Long postId, CommentDTO commentDTO, Principal principal) {
-        User user = getUserByPrincipal(principal);
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostNotFoundException("Post cannot be found for username: " + user.getEmail()));
+    public Comment saveComment(Long recipeId, CommentDTO commentDTO, Principal principal) {
+        UserModel user = getUserByPrincipal(principal);
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new RecipeNotFoundException("Recipe cannot be found for username: " + user.getEmail()));
 
         Comment comment = new Comment();
-        comment.setPost(post);
-        comment.setUserId(user.getId());
-        comment.setUsername(user.getUsername());
-        comment.setMessage(commentDTO.getMessage());
+        comment.setRecipe(recipe);
+        comment.setUser(user);
+        comment.setCommentText(commentDTO.getCommentText());
 
-        LOG.info("Saving comment for Post: {}", post.getId());
+        LOG.info("Saving comment for Recipe: {}", recipe.getRecipeId());
         return commentRepository.save(comment);
     }
 
-    public List<Comment> getAllCommentsForPost(Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostNotFoundException("Post cannot be found"));
-        List<Comment> comments = commentRepository.findAllByPost(post);
+    public List<Comment> getAllCommentsForRecipe(Long recipeId) {
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new RecipeNotFoundException("Recipe cannot be found"));
+        List<Comment> comments = commentRepository.findAllByRecipe(recipe);
 
         return comments;
     }
@@ -62,11 +60,9 @@ public class CommentService {
     }
 
 
-    private User getUserByPrincipal(Principal principal) {
+    private UserModel getUserByPrincipal(Principal principal) {
         String username = principal.getName();
-        return userRepository.findUserByUsername(username)
+        return userRepository.findUserModelByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found with username " + username));
     }
 }
-
- */
