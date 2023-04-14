@@ -18,8 +18,7 @@ public class Ingredient {
 
     @Column(name = "measurement_unit", nullable = false)
     private String measurementUnit;
-    @ManyToOne(fetch = FetchType.EAGER)
-    private IngredientCategory ingredientCategory;
+    private Long categoryId;
 
     public Ingredient() {
     }

@@ -3,9 +3,11 @@ package com.example.coursework.services;
 import com.example.coursework.dto.RecipeDTO;
 import com.example.coursework.entity.ImageModel;
 import com.example.coursework.entity.Recipe;
+import com.example.coursework.entity.RecipeNutrition;
 import com.example.coursework.entity.UserModel;
 import com.example.coursework.exceptions.RecipeNotFoundException;
 import com.example.coursework.repository.ImageRepository;
+import com.example.coursework.repository.NutritionRepository;
 import com.example.coursework.repository.RecipeRepository;
 import com.example.coursework.repository.UserRepository;
 import org.slf4j.Logger;
@@ -25,20 +27,32 @@ public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
+    private final NutritionRepository nutritionRepository;
 
     @Autowired
-    public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository, ImageRepository imageRepository) {
+    public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository, ImageRepository imageRepository, NutritionRepository nutritionRepository) {
         this.recipeRepository = recipeRepository;
         this.userRepository = userRepository;
         this.imageRepository = imageRepository;
+        this.nutritionRepository = nutritionRepository;
     }
 
     public Recipe createRecipe(RecipeDTO recipeDTO, Principal principal) {
         UserModel user = getUserByPrincipal(principal);
+/*
+        RecipeNutrition recipeNutrition = new RecipeNutrition();
+        recipeNutrition.setCalories(recipeDTO.getRecipeNutrition().getCalories());
+        recipeNutrition.setFat(recipeDTO.getRecipeNutrition().getFat());
+        recipeNutrition.setCarbs(recipeDTO.getRecipeNutrition().getCarbs());
+        recipeNutrition.setProteins(recipeDTO.getRecipeNutrition().getProteins());
+        nutritionRepository.save(recipeNutrition);
+*/
         Recipe recipe = new Recipe();
         recipe.setUser(user);
         recipe.setRecipeName(recipeDTO.getRecipeName());
         recipe.setDescription(recipeDTO.getDescription());
+        recipe.setCategoryId(recipeDTO.getCategoryId());
+        recipe.setRecipeNutrition(recipeDTO.getRecipeNutrition());
         recipe.setLikes(0);
 
         LOG.info("Saving Recipe for User: {}", user.getEmail());

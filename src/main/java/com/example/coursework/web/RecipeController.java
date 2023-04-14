@@ -17,8 +17,6 @@ import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.stream;
-
 @RestController
 @RequestMapping("api/recipe")
 @CrossOrigin

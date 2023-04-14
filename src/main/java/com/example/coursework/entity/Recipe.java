@@ -25,10 +25,9 @@ public class Recipe {
     @ManyToOne(fetch = FetchType.LAZY)
     private UserModel user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private RecipeCategory recipeCategory;
+    private Long categoryId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     private RecipeNutrition recipeNutrition;
 
     @Column(updatable = false)

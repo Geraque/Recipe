@@ -36,7 +36,6 @@ public class CommentController {
                                                 Principal principal) {
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(bindingResult);
         if (!ObjectUtils.isEmpty(errors)) return errors;
-
         Comment comment = commentService.saveComment(Long.parseLong(recipeId), commentDTO, principal);
         CommentDTO createdComment = commentFacade.commentToCommentDTO(comment);
 

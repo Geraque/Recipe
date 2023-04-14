@@ -15,7 +15,8 @@ public class RecipeFacade {
         recipeDTO.setLikes(recipe.getLikes());
         recipeDTO.setUsersLiked(recipe.getLikedUsers());
         recipeDTO.setRecipeName(recipe.getRecipeName());
-
+        recipeDTO.setCategoryId(recipe.getCategoryId());
+        recipeDTO.setRecipeNutrition(recipe.getRecipeNutrition());
         return recipeDTO;
     }
 
