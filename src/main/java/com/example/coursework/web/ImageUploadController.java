@@ -34,10 +34,16 @@ public class ImageUploadController {
         imageUploadService.uploadImageToRecipe(file, principal, Long.parseLong(recipeId));
         return ResponseEntity.ok(new MessageResponse("Image Uploaded Successfully"));
     }
-
+    @CrossOrigin
     @GetMapping("/profileImage")
     public ResponseEntity<ImageModel> getImageForUser(Principal principal) {
         ImageModel userImage = imageUploadService.getImageToUser(principal);
+        return new ResponseEntity<>(userImage, HttpStatus.OK);
+    }
+
+    @PostMapping("/searchUser/profileImage/{username}")
+    public ResponseEntity<ImageModel> getImageForSearchUser(@PathVariable("username") String username) {
+        ImageModel userImage = imageUploadService.getImageToSearchUser(username);
         return new ResponseEntity<>(userImage, HttpStatus.OK);
     }
 

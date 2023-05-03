@@ -78,7 +78,15 @@ public class ImageUploadService {
         if (!ObjectUtils.isEmpty(imageModel)) {
             imageModel.setImageBytes(decompressBytes(imageModel.getImageBytes()));
         }
+        return imageModel;
+    }
+    public ImageModel getImageToSearchUser(String username) {
+        UserModel user =  getUserByUsername(username);
 
+        ImageModel imageModel = imageRepository.findByUserId(user.getUserId()).orElse(null);
+        if (!ObjectUtils.isEmpty(imageModel)) {
+            imageModel.setImageBytes(decompressBytes(imageModel.getImageBytes()));
+        }
         return imageModel;
     }
 
@@ -130,6 +138,12 @@ public class ImageUploadService {
 
     private UserModel getUserByPrincipal(Principal principal) {
         String username = principal.getName();
+        return userRepository.findUserModelByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found with username " + username));
+
+    }
+
+    private UserModel getUserByUsername(String username) {
         return userRepository.findUserModelByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found with username " + username));
 
