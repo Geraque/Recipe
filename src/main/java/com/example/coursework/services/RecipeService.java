@@ -105,6 +105,11 @@ public class RecipeService {
         return recipeRepository.findAllByUserOrderByDateCreatedDesc(user);
     }
 
+    public List<Recipe> getAllRecipeForUsername(String username) {
+        UserModel user = getUserByUsername(username);
+        return recipeRepository.findAllByUserOrderByDateCreatedDesc(user);
+    }
+
     public Recipe likeRecipe(Long recipeId, String username) {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new RecipeNotFoundException("Recipe cannot be found"));
@@ -132,6 +137,12 @@ public class RecipeService {
 
     private UserModel getUserByPrincipal(Principal principal) {
         String username = principal.getName();
+        return userRepository.findUserModelByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found with username " + username));
+
+    }
+
+    private UserModel getUserByUsername(String username) {
         return userRepository.findUserModelByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found with username " + username));
 

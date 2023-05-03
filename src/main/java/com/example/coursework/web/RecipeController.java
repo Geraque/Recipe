@@ -66,6 +66,16 @@ public class RecipeController {
         return new ResponseEntity<>(recipeDTOList, HttpStatus.OK);
     }
 
+    @PostMapping("/{username}/recipes")
+    public ResponseEntity<List<RecipeDTO>> getAllRecipesForUser(@PathVariable("username") String username) {
+        List<RecipeDTO> recipeDTOList = recipeService.getAllRecipeForUsername(username)
+                .stream()
+                .map(recipeFacade::recipeToRecipeDTO)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(recipeDTOList, HttpStatus.OK);
+    }
+
     @GetMapping("/user/recipes")
     public ResponseEntity<List<RecipeDTO>> getAllRecipesForUser(Principal principal) {
         List<RecipeDTO> recipeDTOList = recipeService.getAllRecipeForUser(principal)
