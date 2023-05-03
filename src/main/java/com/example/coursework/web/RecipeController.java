@@ -1,5 +1,6 @@
 package com.example.coursework.web;
 import com.example.coursework.dto.RecipeDTO;
+import com.example.coursework.dto.RecipeDTO2;
 import com.example.coursework.entity.Recipe;
 import com.example.coursework.facade.RecipeFacade;
 import com.example.coursework.payload.response.MessageResponse;
@@ -37,6 +38,19 @@ public class RecipeController {
         if (!ObjectUtils.isEmpty(errors)) return errors;
 
         Recipe recipe = recipeService.createRecipe(recipeDTO, principal);
+        RecipeDTO createdRecipe = recipeFacade.recipeToRecipeDTO(recipe);
+
+        return new ResponseEntity<>(createdRecipe, HttpStatus.OK);
+    }
+
+    @PostMapping("/createwithnutrition")
+    public ResponseEntity<Object> createRecipeWithNutrition(@Valid @RequestBody RecipeDTO2 recipeDTO,
+                                               BindingResult bindingResult,
+                                               Principal principal) {
+        ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(bindingResult);
+        if (!ObjectUtils.isEmpty(errors)) return errors;
+
+        Recipe recipe = recipeService.createRecipeWithNutrition(recipeDTO, principal);
         RecipeDTO createdRecipe = recipeFacade.recipeToRecipeDTO(recipe);
 
         return new ResponseEntity<>(createdRecipe, HttpStatus.OK);

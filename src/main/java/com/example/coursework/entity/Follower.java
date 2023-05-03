@@ -13,11 +13,9 @@ public class Follower {
     @Column(name = "follower_id", nullable = false)
     private Long followerId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private UserModel userId;
+    private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private UserModel followingId;
+    private Long followingId;
 
     public Follower() {
     }

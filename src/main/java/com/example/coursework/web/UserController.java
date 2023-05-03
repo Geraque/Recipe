@@ -42,6 +42,15 @@ public class UserController {
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
+    @CrossOrigin
+    @PostMapping("/get/{username}")
+    public ResponseEntity<UserDTO> getUserByUsername(@PathVariable("username") String username) {
+        UserModel user = userService.getUserByUsername(username);
+        UserDTO userDTO = userFacade.userModelToUserDTO(user);
+
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
+    }
+
     @PostMapping("/update")
     public ResponseEntity<Object> updateUser(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult, Principal principal) {
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(bindingResult);
@@ -52,4 +61,5 @@ public class UserController {
         UserDTO userUpdated = userFacade.userModelToUserDTO(user);
         return new ResponseEntity<>(userUpdated, HttpStatus.OK);
     }
+
 }

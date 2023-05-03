@@ -27,7 +27,7 @@ public class Recipe {
 
     private Long categoryId;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     private RecipeNutrition recipeNutrition;
 
     @Column(updatable = false)

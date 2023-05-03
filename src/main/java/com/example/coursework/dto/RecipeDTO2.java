@@ -8,7 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
 @Data
-public class RecipeDTO {
+public class RecipeDTO2 {
 
     private Long recipeId;
     @NotEmpty
@@ -17,7 +17,13 @@ public class RecipeDTO {
     private String description;
     private String username;
     private Long categoryId;
-    private RecipeNutrition recipeNutrition;
+    private Integer calories;
+
+    private Integer proteins;
+
+    private Integer carbs;
+
+    private Integer fat;
     private Integer likes;
     private Set<String> usersLiked;
 

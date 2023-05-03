@@ -1,15 +1,10 @@
 package com.example.coursework.services;
 
 import com.example.coursework.dto.RecipeDTO;
-import com.example.coursework.entity.ImageModel;
-import com.example.coursework.entity.Recipe;
-import com.example.coursework.entity.RecipeNutrition;
-import com.example.coursework.entity.UserModel;
+import com.example.coursework.dto.RecipeDTO2;
+import com.example.coursework.entity.*;
 import com.example.coursework.exceptions.RecipeNotFoundException;
-import com.example.coursework.repository.ImageRepository;
-import com.example.coursework.repository.NutritionRepository;
-import com.example.coursework.repository.RecipeRepository;
-import com.example.coursework.repository.UserRepository;
+import com.example.coursework.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,36 +22,72 @@ public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
+    private final RecipeIngredientRepository recipeIngredientRepository;
     private final NutritionRepository nutritionRepository;
-
     @Autowired
-    public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository, ImageRepository imageRepository, NutritionRepository nutritionRepository) {
+    public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository, ImageRepository imageRepository, RecipeIngredientRepository recipeIngredientRepository, NutritionRepository nutritionRepository) {
         this.recipeRepository = recipeRepository;
         this.userRepository = userRepository;
         this.imageRepository = imageRepository;
+        this.recipeIngredientRepository = recipeIngredientRepository;
         this.nutritionRepository = nutritionRepository;
     }
 
     public Recipe createRecipe(RecipeDTO recipeDTO, Principal principal) {
         UserModel user = getUserByPrincipal(principal);
-/*
-        RecipeNutrition recipeNutrition = new RecipeNutrition();
-        recipeNutrition.setCalories(recipeDTO.getRecipeNutrition().getCalories());
-        recipeNutrition.setFat(recipeDTO.getRecipeNutrition().getFat());
-        recipeNutrition.setCarbs(recipeDTO.getRecipeNutrition().getCarbs());
-        recipeNutrition.setProteins(recipeDTO.getRecipeNutrition().getProteins());
-        nutritionRepository.save(recipeNutrition);
-*/
         Recipe recipe = new Recipe();
+        System.out.println(recipeDTO);
+        System.out.println(recipeDTO.getRecipeNutrition());
         recipe.setUser(user);
         recipe.setRecipeName(recipeDTO.getRecipeName());
         recipe.setDescription(recipeDTO.getDescription());
         recipe.setCategoryId(recipeDTO.getCategoryId());
         recipe.setRecipeNutrition(recipeDTO.getRecipeNutrition());
         recipe.setLikes(0);
+        recipeRepository.save(recipe);
+        /*
+        RecipeIngredient recipeIngredient = new RecipeIngredient();
+        recipeIngredient.setQuantity(recipeDTO.getQuantity());
+        recipeIngredient.setIngredientId(recipeDTO.getIngredientId());
+        System.out.println("ABBBBBBBBBBBBBBOOOOOOOOOOOOOOOOOOOOOOOOOOOBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        System.out.println(recipeRepository.findAllByUserOrderByDateCreatedDesc(user).get(0).getRecipeId());
+        recipeIngredient.setRecipeId(recipeRepository.findAllByUserOrderByDateCreatedDesc(user).get(0).getRecipeId());
 
+        recipeIngredientRepository.save(recipeIngredient);
+*/
         LOG.info("Saving Recipe for User: {}", user.getEmail());
-        return recipeRepository.save(recipe);
+        return recipe;
+    }
+
+    public Recipe createRecipeWithNutrition(RecipeDTO2 recipeDTO, Principal principal) {
+        UserModel user = getUserByPrincipal(principal);
+        Recipe recipe = new Recipe();
+        recipe.setUser(user);
+        recipe.setRecipeName(recipeDTO.getRecipeName());
+        recipe.setDescription(recipeDTO.getDescription());
+        recipe.setCategoryId(recipeDTO.getCategoryId());
+
+        RecipeNutrition recipeNutrition = new RecipeNutrition();
+        recipeNutrition.setCalories(recipeDTO.getCalories());
+        recipeNutrition.setFat(recipeDTO.getFat());
+        recipeNutrition.setProteins(recipeDTO.getProteins());
+        recipeNutrition.setCarbs(recipeDTO.getCarbs());
+
+        recipe.setRecipeNutrition(recipeNutrition);
+        recipe.setLikes(0);
+        recipeRepository.save(recipe);
+        /*
+        RecipeIngredient recipeIngredient = new RecipeIngredient();
+        recipeIngredient.setQuantity(recipeDTO.getQuantity());
+        recipeIngredient.setIngredientId(recipeDTO.getIngredientId());
+        System.out.println("ABBBBBBBBBBBBBBOOOOOOOOOOOOOOOOOOOOOOOOOOOBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        System.out.println(recipeRepository.findAllByUserOrderByDateCreatedDesc(user).get(0).getRecipeId());
+        recipeIngredient.setRecipeId(recipeRepository.findAllByUserOrderByDateCreatedDesc(user).get(0).getRecipeId());
+
+        recipeIngredientRepository.save(recipeIngredient);
+*/
+        LOG.info("Saving Recipe for User: {}", user.getEmail());
+        return recipe;
     }
 
     public List<Recipe> getAllRecipes() {

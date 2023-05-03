@@ -12,13 +12,8 @@ public class RecipeIngredient {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "recipe_ingredient_id", nullable = false)
     private Long recipeIngredientId;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Ingredient ingredient;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Recipe recipe;
-
+    private Long ingredientId;
+    private Long recipeId;
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
