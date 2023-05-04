@@ -12,10 +12,6 @@ public class RecipeSave {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "save_id", nullable = false)
     private Long saveId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private UserModel user;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Recipe recipe;
+    private Long userId;
+    private Long recipeId;
 }
