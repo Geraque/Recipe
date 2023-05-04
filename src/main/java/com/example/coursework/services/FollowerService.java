@@ -38,8 +38,13 @@ public class FollowerService {
         followerRepository.delete(follower);
     }
 
+    public boolean isFollowing(Long followerId, Long userId) throws IOException {
+        Follower follower = getFollowByFollowerIdAndUserId(followerId, userId);
+        return follower != null;
+    }
+
     public Follower getFollowByFollowerIdAndUserId(Long followerId, Long userId) {
         return followerRepository.findByFollowingIdAndUserId(followerId, userId)
-                .orElseThrow(() -> new RecipeNotFoundException("Follower cannot be found for followerId: " + followerId));
+                .orElse(null);
     }
 }
