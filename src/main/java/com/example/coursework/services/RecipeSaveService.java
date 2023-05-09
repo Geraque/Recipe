@@ -11,16 +11,28 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class RecipeSaveService {
     public static final Logger LOG = LoggerFactory.getLogger(RecipeSaveService.class);
-
+    private final RecipeRepository recipeRepository;
     private final RecipeSaveRepository recipeSaveRepository;
     @Autowired
-    public RecipeSaveService(RecipeSaveRepository recipeSaveRepository){
+    public RecipeSaveService(RecipeRepository recipeRepository, RecipeSaveRepository recipeSaveRepository){
+        this.recipeRepository = recipeRepository;
         this.recipeSaveRepository = recipeSaveRepository;
+    }
+
+
+    public List<Recipe> getAllRecipeForUserId(Long userId) {
+        List<RecipeSave> recipesId =  recipeSaveRepository.findAllRecipeIdByUserId(userId);
+        List<Recipe> recipes = new ArrayList<>();
+        for(RecipeSave recipeSave: recipesId){
+            recipes.add(getRecipeById(recipeSave.getRecipeId()));
+        }
+        return recipes;
     }
 
     public RecipeSave saveRecipe(Long userId, Long recipeId) {
@@ -31,11 +43,11 @@ public class RecipeSaveService {
     }
 
     public void deleteRecipe(Long userId, Long recipeId) {
-        RecipeSave recipeSave = getRecipeById(userId, recipeId);
+        RecipeSave recipeSave = getRecipeSaveById(userId, recipeId);
         recipeSaveRepository.delete(recipeSave);
     }
 
-    public RecipeSave getRecipeById(Long userId, Long recipeId) {
+    public RecipeSave getRecipeSaveById(Long userId, Long recipeId) {
         return recipeSaveRepository.findRecipeSaveByRecipeIdAndUserId(recipeId, userId)
                 .orElseThrow(() -> new RecipeSaveNotFoundException("Recipe cannot be found for userId: " + userId));
     }
@@ -50,4 +62,8 @@ public class RecipeSaveService {
                 .orElse(null);
     }
 
+    public Recipe getRecipeById(Long recipeId) {
+        return recipeRepository.findRecipeByRecipeId(recipeId)
+                .orElseThrow(() -> new RecipeNotFoundException("Recipe cannot be found for username: " + recipeId));
+    }
 }
