@@ -10,11 +10,9 @@ import javax.persistence.*;
 public class RecipeCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "category_id", nullable = false)
+    private Long recipeCategoryId;
+    private Long recipeId;
     private Long categoryId;
-
-    @Column(name = "category_name", nullable = false)
-    private String categoryName;
 
     public RecipeCategory() {
     }

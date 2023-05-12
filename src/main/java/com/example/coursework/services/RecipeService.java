@@ -41,7 +41,6 @@ public class RecipeService {
         recipe.setUser(user);
         recipe.setRecipeName(recipeDTO.getRecipeName());
         recipe.setDescription(recipeDTO.getDescription());
-        recipe.setCategoryId(recipeDTO.getCategoryId());
         recipe.setRecipeNutrition(recipeDTO.getRecipeNutrition());
         recipe.setLikes(0);
         recipeRepository.save(recipe);
@@ -65,7 +64,6 @@ public class RecipeService {
         recipe.setUser(user);
         recipe.setRecipeName(recipeDTO.getRecipeName());
         recipe.setDescription(recipeDTO.getDescription());
-        recipe.setCategoryId(recipeDTO.getCategoryId());
 
         RecipeNutrition recipeNutrition = new RecipeNutrition();
         recipeNutrition.setCalories(recipeDTO.getCalories());

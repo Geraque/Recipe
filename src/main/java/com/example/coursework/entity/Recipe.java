@@ -25,8 +25,6 @@ public class Recipe {
     @ManyToOne(fetch = FetchType.LAZY)
     private UserModel user;
 
-    private Long categoryId;
-
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     private RecipeNutrition recipeNutrition;
 

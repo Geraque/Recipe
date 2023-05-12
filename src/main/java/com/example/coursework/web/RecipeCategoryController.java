@@ -1,8 +1,6 @@
 package com.example.coursework.web;
-import com.example.coursework.dto.RecipeCategoryDTO;
-import com.example.coursework.dto.RecipeDTO;
-import com.example.coursework.entity.Recipe;
-import com.example.coursework.entity.RecipeCategory;
+
+import com.example.coursework.entity.Category;
 import com.example.coursework.facade.RecipeCategoryFacade;
 import com.example.coursework.services.RecipeCategoryService;
 import com.example.coursework.validations.ResponseErrorValidation;
@@ -12,10 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("api/category")
+@RequestMapping("api/recipeCategory")
 @CrossOrigin
 public class RecipeCategoryController {
 
@@ -26,7 +23,7 @@ public class RecipeCategoryController {
     @Autowired
     private ResponseErrorValidation responseErrorValidation;
 
-
+/*
     @GetMapping("/all")
     public ResponseEntity<List<RecipeCategoryDTO>> getAllCategories() {
         List<RecipeCategoryDTO> recipeCategoryDTOList = recipeCategoryService.getAllCategories()
@@ -37,11 +34,15 @@ public class RecipeCategoryController {
         return new ResponseEntity<>(recipeCategoryDTOList, HttpStatus.OK);
     }
 
-    @PostMapping("/name/{categoryId}")
-    public ResponseEntity<String> getCategoryByCategoryId(@PathVariable("categoryId") String categoryId){
-        RecipeCategory recipeCategory = recipeCategoryService.getCategoryByCategoryId(Long.parseLong(categoryId));
-        String categoryName = recipeCategory.getCategoryName();
+ */
 
-        return new ResponseEntity<>(categoryName, HttpStatus.OK);
+    @PostMapping("/all/{recipeId}")
+    public ResponseEntity<List<Category>> getCategoryByCategoryId(@PathVariable("recipeId") String recipeId){
+
+        List<Category> categories = recipeCategoryService.getCategoriesByRecipeId(Long.parseLong(recipeId));
+
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
+
+
 }

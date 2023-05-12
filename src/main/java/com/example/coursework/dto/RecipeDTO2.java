@@ -16,7 +16,6 @@ public class RecipeDTO2 {
     @NotEmpty
     private String description;
     private String username;
-    private Long categoryId;
     private Integer calories;
 
     private Integer proteins;

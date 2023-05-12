@@ -11,8 +11,9 @@ public class RecipeCategoryFacade {
 
     public RecipeCategoryDTO recipeCategoryToRecipeCategoryDTO(RecipeCategory category) {
         RecipeCategoryDTO recipeCategoryDTO = new RecipeCategoryDTO();
+        recipeCategoryDTO.setRecipeCategoryId(category.getRecipeCategoryId());
         recipeCategoryDTO.setCategoryId(category.getCategoryId());
-        recipeCategoryDTO.setCategoryName(category.getCategoryName());
+        recipeCategoryDTO.setRecipeId(category.getRecipeId());
         return recipeCategoryDTO;
     }
 

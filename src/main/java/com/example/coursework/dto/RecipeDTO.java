@@ -16,7 +16,6 @@ public class RecipeDTO {
     @NotEmpty
     private String description;
     private String username;
-    private Long categoryId;
     private RecipeNutrition recipeNutrition;
     private Integer likes;
     private Set<String> usersLiked;

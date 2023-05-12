@@ -1,11 +1,16 @@
 package com.example.coursework.web;
 
+import com.example.coursework.dto.EnterDTO;
+import com.example.coursework.entity.Enter;
+import com.example.coursework.facade.CommentFacade;
+import com.example.coursework.facade.EnterFacade;
 import com.example.coursework.payload.request.LoginRequest;
 import com.example.coursework.payload.request.SignupRequest;
 import com.example.coursework.payload.response.JWTTokenSuccessResponse;
 import com.example.coursework.payload.response.MessageResponse;
 import com.example.coursework.security.JWTTokenProvider;
 import com.example.coursework.security.SecurityConstants;
+import com.example.coursework.services.EnterService;
 import com.example.coursework.services.UserService;
 import com.example.coursework.validations.ResponseErrorValidation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +40,10 @@ public class AuthController {
     private ResponseErrorValidation responseErrorValidation;
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private EnterService enterService;
+    @Autowired
+    private EnterFacade enterFacade;
     @PostMapping("/signin")
     public ResponseEntity<Object> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, BindingResult bindingResult) {
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(bindingResult);
@@ -49,6 +57,12 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = SecurityConstants.TOKEN_PREFIX + jwtTokenProvider.generateToken(authentication);
 
+        /*
+        Enter enter = enterService.saveEnter(loginRequest.getUsername());
+        EnterDTO createdEnter = enterFacade.enterToEnterDTO(enter);
+
+
+         */
         return ResponseEntity.ok(new JWTTokenSuccessResponse(true, jwt));
     }
 

@@ -6,9 +6,8 @@ import javax.validation.constraints.NotEmpty;
 
 @Data
 public class RecipeCategoryDTO {
-
+    private Long recipeCategoryId;
     private Long categoryId;
-    @NotEmpty
-    private String categoryName;
+    private Long recipeId;
 
 }

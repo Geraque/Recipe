@@ -8,23 +8,21 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "like")
-public class Like {
+@Table(name = "likeModel")
+public class LikeModel {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "like_id", nullable = false)
     private Long likeId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private UserModel user;
+    private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Recipe recipe;
+    private Long recipeId;
 
     @Column(updatable = false)
     private LocalDateTime dateLiked;
 
-    public Like() {
+    public LikeModel() {
     }
 
     @PrePersist
