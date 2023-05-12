@@ -23,19 +23,6 @@ public class RecipeCategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-/*
-    public List<RecipeCategory> getAllCategories() {
-        return recipeCategoryRepository.findAllByOrderByCategoryName();
-    }
-
-
-
-    public RecipeCategory getCategoryByCategoryId(Long recipeId) {
-        return recipeCategoryRepository.findByCategoryId(recipeId)
-                .orElseThrow(() -> new RecipeNotFoundException("Category cannot be found for username: " +recipeId));
-    }
-
- */
 
     public List<Category> getCategoriesByRecipeId(Long recipeId) {
         List<RecipeCategory> recipeCategories = recipeCategoryRepository.findByRecipeId(recipeId);
@@ -46,6 +33,14 @@ public class RecipeCategoryService {
             categories.add(category);
         }
         return categories;
+    }
+
+    public RecipeCategory saveRecipeCategory(Long categoryId,Long recipeId) {
+        RecipeCategory recipeCategory = new RecipeCategory();
+        recipeCategory.setRecipeId(recipeId);
+        recipeCategory.setCategoryId(categoryId);
+        LOG.info("Saving recipeCategory for recipeId: {}", recipeId);
+        return recipeCategoryRepository.save(recipeCategory);
     }
 
 
