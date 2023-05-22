@@ -19,20 +19,19 @@ import java.util.Optional;
 @Service
 public class RecipeService {
     public static final Logger LOG = LoggerFactory.getLogger(RecipeService.class);
-
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
-    private final RecipeIngredientRepository recipeIngredientRepository;
     private final NutritionRepository nutritionRepository;
+    private final LikeRepository likeRepository;
     private final RecipeSaveRepository saveRepository;
     @Autowired
-    public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository, ImageRepository imageRepository, RecipeIngredientRepository recipeIngredientRepository, NutritionRepository nutritionRepository, RecipeSaveRepository saveRepository) {
+    public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository, ImageRepository imageRepository, NutritionRepository nutritionRepository, LikeRepository likeRepository, RecipeSaveRepository saveRepository) {
         this.recipeRepository = recipeRepository;
         this.userRepository = userRepository;
         this.imageRepository = imageRepository;
-        this.recipeIngredientRepository = recipeIngredientRepository;
         this.nutritionRepository = nutritionRepository;
+        this.likeRepository = likeRepository;
         this.saveRepository = saveRepository;
     }
 
@@ -62,13 +61,9 @@ public class RecipeService {
     }
 
     @Transactional
-    public List<Recipe> findRecipesByUserId(Long userId, Principal principal) {
+    public List<Recipe> findRecipesByPrincipal(Principal principal) {
         UserModel user = getUserByPrincipal(principal);
-        if (user.getUserId().equals(userId)) {
-            return recipeRepository.findAllByUserOrderByDateCreatedDesc(user);
-        } else {
-            throw new RuntimeException("You are not authorized to access these recipes.");
-        }
+        return recipeRepository.findAllByUserOrderByDateCreatedDesc(user);
     }
 
     public Recipe createRecipeWithNutrition(RecipeDTO2 recipeDTO, Principal principal) {
@@ -128,13 +123,20 @@ public class RecipeService {
         Optional<String> userLiked = recipe.getLikedUsers()
                 .stream()
                 .filter(u -> u.equals(username)).findAny();
-
+        UserModel userModel = getUserByUsername(username);
         if (userLiked.isPresent()) {
             recipe.setLikes(recipe.getLikes() - 1);
             recipe.getLikedUsers().remove(username);
+            Optional<LikeModel> likeModel = likeRepository.findByRecipeIdAndUserId(recipeId,userModel.getUserId());
+            likeModel.ifPresent(likeRepository::delete);
+
         } else {
             recipe.setLikes(recipe.getLikes() + 1);
             recipe.getLikedUsers().add(username);
+            LikeModel likeModel = new LikeModel();
+            likeModel.setRecipeId(recipeId);
+            likeModel.setUserId(userModel.getUserId());
+            likeRepository.save(likeModel);
         }
         return recipeRepository.save(recipe);
     }
@@ -162,12 +164,16 @@ public class RecipeService {
         String username = principal.getName();
         return userRepository.findUserModelByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found with username " + username));
-
     }
 
     private UserModel getUserByUsername(String username) {
         return userRepository.findUserModelByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found with username " + username));
+
+    }
+
+    private UserModel getUserByUserId(Long userId) {
+        return userRepository.findUserModelByUserId(userId).orElse(null);
 
     }
 }

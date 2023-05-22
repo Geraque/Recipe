@@ -9,6 +9,7 @@ import com.example.coursework.services.RecipeService;
 import com.example.coursework.validations.ResponseErrorValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,7 +18,12 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.core.io.Resource;
+
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,9 +66,9 @@ public class RecipeController {
         return new ResponseEntity<>(createdRecipe, HttpStatus.OK);
     }
 
-    @GetMapping("/download/{userId}")
-    public ResponseEntity<Object> downloadRecipesByUserId(@PathVariable("userId") Long userId, Principal principal) {
-        List<Recipe> recipes = recipeService.findRecipesByUserId(userId, principal);
+    @GetMapping("/download")
+    public ResponseEntity<Object> downloadRecipes(Principal principal) {
+        List<Recipe> recipes = recipeService.findRecipesByPrincipal(principal);
         ByteArrayResource resource = recipeFacade.exportRecipesToExcel(recipes);
 
         return ResponseEntity.ok()
@@ -70,6 +76,7 @@ public class RecipeController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=recipes.xlsx; charset=UTF-8" )
                 .body(resource);
     }
+
 
     @GetMapping("/all")
     public ResponseEntity<List<RecipeDTO>> getAllRecipes() {
