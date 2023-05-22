@@ -43,8 +43,8 @@ public class CommentController {
     }
 
     @GetMapping("/{recipeId}/all")
-    public ResponseEntity<List<CommentDTO>> getAllCommentsToRecipe(@PathVariable("recipeId") String recipeId) {
-        List<CommentDTO> commentDTOList = commentService.getAllCommentsForRecipe(Long.parseLong(recipeId))
+    public ResponseEntity<List<CommentDTO>> getAllCommentsToRecipe(@PathVariable("recipeId") Long recipeId) {
+        List<CommentDTO> commentDTOList = commentService.getAllCommentsForRecipe(recipeId)
                 .stream()
                 .map(commentFacade::commentToCommentDTO)
                 .collect(Collectors.toList());

@@ -15,10 +15,12 @@ public class Comment {
     @Column(name = "comment_id", nullable = false)
     private Long commentId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private UserModel user;
+    @Column(nullable = false)
+    private String username;
+    @Column(nullable = false)
+    private Long userId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Recipe recipe;
     @Column(columnDefinition = "text", nullable = false)
     private String commentText;

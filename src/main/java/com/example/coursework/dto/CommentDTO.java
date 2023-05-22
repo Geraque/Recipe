@@ -11,6 +11,6 @@ public class CommentDTO {
     private long commentId;
     @NotEmpty
     private String commentText;
-    private UserModel user;
+    private String username;
 
 }

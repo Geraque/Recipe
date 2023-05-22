@@ -39,7 +39,8 @@ public class CommentService {
 
         Comment comment = new Comment();
         comment.setRecipe(recipe);
-        comment.setUser(user);
+        comment.setUserId(user.getUserId());
+        comment.setUsername(user.getUsername());
         comment.setCommentText(commentDTO.getCommentText());
 
         LOG.info("Saving comment for Recipe: {}", recipe.getRecipeId());

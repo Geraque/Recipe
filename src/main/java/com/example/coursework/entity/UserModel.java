@@ -58,6 +58,20 @@ public class UserModel implements UserDetails {
         this.password = password;
         this.authorities = authorities;
     }
+    @Override
+    public String toString() {
+        return "UserModel{" +
+                "userId=" + userId +
+                ", name='" + name + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", dateCreated=" + dateCreated +
+                ", recipes=" + recipes +
+                ", authorities=" + authorities +
+                '}';
+    }
 
     @PrePersist
     protected void onCreate() {

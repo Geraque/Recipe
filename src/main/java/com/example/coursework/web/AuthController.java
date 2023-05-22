@@ -57,12 +57,9 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = SecurityConstants.TOKEN_PREFIX + jwtTokenProvider.generateToken(authentication);
 
-        /*
-        Enter enter = enterService.saveEnter(loginRequest.getUsername());
+        System.out.println(loginRequest.getUsername());
+        Enter enter = enterService.saveEnterByEmail(loginRequest.getUsername());
         EnterDTO createdEnter = enterFacade.enterToEnterDTO(enter);
-
-
-         */
         return ResponseEntity.ok(new JWTTokenSuccessResponse(true, jwt));
     }
 
@@ -73,6 +70,15 @@ public class AuthController {
         if (!ObjectUtils.isEmpty(errors)) return errors;
 
         userService.createUser(signupRequest);
+        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    }
+
+    @PostMapping("/addAdmin")
+    public ResponseEntity<Object> registerAdmin(@Valid @RequestBody SignupRequest signupRequest, BindingResult bindingResult) {
+        ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(bindingResult);
+        if (!ObjectUtils.isEmpty(errors)) return errors;
+
+        userService.createAdmin(signupRequest);
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 

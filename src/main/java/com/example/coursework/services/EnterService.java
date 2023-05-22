@@ -32,8 +32,22 @@ public class EnterService {
         return enterRepository.save(enter);
     }
 
+    public Enter saveEnterByEmail(String email) {
+        UserModel user = getUserByEmail(email);
+        Enter enter = new Enter();
+        enter.setUserId(user.getUserId());
+
+        LOG.info("Saving enter for userId: {}", user.getUserId());
+        return enterRepository.save(enter);
+    }
+
     public UserModel getUserByUsername(String username) {
         return userRepository.findUserModelByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found with username " + username));
+    }
+
+    public UserModel getUserByEmail(String email) {
+        return userRepository.findUserModelByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found with email " + email));
     }
 }

@@ -13,6 +13,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     List<Comment> findAllByRecipe(Recipe recipe);
 
-    Comment findByCommentIdAndUser(Long commentId, UserModel user);
+    Comment findByCommentIdAndUserId(Long commentId, Long userId);
 
 }

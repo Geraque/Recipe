@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 import java.util.List;
@@ -24,13 +25,15 @@ public class RecipeService {
     private final ImageRepository imageRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final NutritionRepository nutritionRepository;
+    private final RecipeSaveRepository saveRepository;
     @Autowired
-    public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository, ImageRepository imageRepository, RecipeIngredientRepository recipeIngredientRepository, NutritionRepository nutritionRepository) {
+    public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository, ImageRepository imageRepository, RecipeIngredientRepository recipeIngredientRepository, NutritionRepository nutritionRepository, RecipeSaveRepository saveRepository) {
         this.recipeRepository = recipeRepository;
         this.userRepository = userRepository;
         this.imageRepository = imageRepository;
         this.recipeIngredientRepository = recipeIngredientRepository;
         this.nutritionRepository = nutritionRepository;
+        this.saveRepository = saveRepository;
     }
 
     public Recipe createRecipe(RecipeDTO recipeDTO, Principal principal) {
@@ -56,6 +59,16 @@ public class RecipeService {
 */
         LOG.info("Saving Recipe for User: {}", user.getEmail());
         return recipe;
+    }
+
+    @Transactional
+    public List<Recipe> findRecipesByUserId(Long userId, Principal principal) {
+        UserModel user = getUserByPrincipal(principal);
+        if (user.getUserId().equals(userId)) {
+            return recipeRepository.findAllByUserOrderByDateCreatedDesc(user);
+        } else {
+            throw new RuntimeException("You are not authorized to access these recipes.");
+        }
     }
 
     public Recipe createRecipeWithNutrition(RecipeDTO2 recipeDTO, Principal principal) {
@@ -126,11 +139,23 @@ public class RecipeService {
         return recipeRepository.save(recipe);
     }
 
+    public RecipeNutrition getNutritionByNutritionId(Long nutritionId){
+        return nutritionRepository.findRecipeNutritionByNutritionId(nutritionId)
+                .orElseThrow(() -> new UsernameNotFoundException("Nutrition not found with nutritionId " + nutritionId));
+    }
+
     public void deleteRecipe(Long recipeId, Principal principal) {
         Recipe recipe = getRecipeById(recipeId, principal);
         Optional<ImageModel> imageModel = imageRepository.findByRecipeId(recipe.getRecipeId());
+        Optional<RecipeNutrition> nutrition = Optional.ofNullable(recipe.getRecipeNutrition());
+        List<RecipeSave> saves =  saveRepository.findAllByRecipeId(recipeId);
         recipeRepository.delete(recipe);
         imageModel.ifPresent(imageRepository::delete);
+        nutrition.ifPresent(nutritionRepository::delete);
+        for (RecipeSave save :saves) {
+            Optional<RecipeSave> saveDelete = Optional.ofNullable(save);
+            saveDelete.ifPresent(saveRepository::delete);
+        }
     }
 
     private UserModel getUserByPrincipal(Principal principal) {

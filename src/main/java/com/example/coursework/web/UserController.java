@@ -62,4 +62,11 @@ public class UserController {
         return new ResponseEntity<>(userUpdated, HttpStatus.OK);
     }
 
+    @CrossOrigin
+    @PostMapping("/isAdmin/{userId}")
+    public ResponseEntity<Boolean> isAdmin(@PathVariable("userId") String userId) {
+        Boolean bool = userService.isAdmin(Long.parseLong(userId));
+        return new ResponseEntity<>(bool, HttpStatus.OK);
+    }
+
 }

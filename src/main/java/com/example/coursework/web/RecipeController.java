@@ -2,12 +2,16 @@ package com.example.coursework.web;
 import com.example.coursework.dto.RecipeDTO;
 import com.example.coursework.dto.RecipeDTO2;
 import com.example.coursework.entity.Recipe;
+import com.example.coursework.entity.RecipeNutrition;
 import com.example.coursework.facade.RecipeFacade;
 import com.example.coursework.payload.response.MessageResponse;
 import com.example.coursework.services.RecipeService;
 import com.example.coursework.validations.ResponseErrorValidation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.BindingResult;
@@ -20,7 +24,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/recipe")
-@CrossOrigin
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class RecipeController {
 
     @Autowired
@@ -56,6 +60,17 @@ public class RecipeController {
         return new ResponseEntity<>(createdRecipe, HttpStatus.OK);
     }
 
+    @GetMapping("/download/{userId}")
+    public ResponseEntity<Object> downloadRecipesByUserId(@PathVariable("userId") Long userId, Principal principal) {
+        List<Recipe> recipes = recipeService.findRecipesByUserId(userId, principal);
+        ByteArrayResource resource = recipeFacade.exportRecipesToExcel(recipes);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=recipes.xlsx; charset=UTF-8" )
+                .body(resource);
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<RecipeDTO>> getAllRecipes() {
         List<RecipeDTO> recipeDTOList = recipeService.getAllRecipes()
@@ -84,6 +99,13 @@ public class RecipeController {
                 .collect(Collectors.toList());
 
         return new ResponseEntity<>(recipeDTOList, HttpStatus.OK);
+    }
+
+    @PostMapping("/{nutritionId}/nutrition")
+    public ResponseEntity<RecipeNutrition> getNutritionByNutritionId(@PathVariable("nutritionId") String nutritionId) {
+        RecipeNutrition nutrition = recipeService.getNutritionByNutritionId(Long.parseLong(nutritionId));
+
+        return new ResponseEntity<>(nutrition, HttpStatus.OK);
     }
 
     @PostMapping("/{recipeId}/{username}/like")

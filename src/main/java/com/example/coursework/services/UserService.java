@@ -14,6 +14,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.Set;
+
+import static com.example.coursework.entity.enums.ERole.ROLE_ADMIN;
+import static com.example.coursework.entity.enums.ERole.ROLE_USER;
 
 @Service
 public class UserService {
@@ -35,7 +39,24 @@ public class UserService {
         user.setLastname(userIn.getLastname());
         user.setUsername(userIn.getUsername());
         user.setPassword(passwordEncoder.encode(userIn.getPassword()));
-        user.getRoles().add(ERole.ROLE_USER);
+        user.getRoles().add(ROLE_USER);
+
+        try {
+            LOG.info("Saving User {}", userIn.getEmail());
+            return userRepository.save(user);
+        } catch (Exception e) {
+            LOG.error("Error during registration. {}", e.getMessage());
+            throw new UserExistException("The user " + user.getUsername() + " already exist. Please check credentials");
+        }
+    }
+    public UserModel createAdmin(SignupRequest userIn) {
+        UserModel user = new UserModel();
+        user.setEmail(userIn.getEmail());
+        user.setName(userIn.getFirstname());
+        user.setLastname(userIn.getLastname());
+        user.setUsername(userIn.getUsername());
+        user.setPassword(passwordEncoder.encode(userIn.getPassword()));
+        user.getRoles().add(ROLE_ADMIN);
 
         try {
             LOG.info("Saving User {}", userIn.getEmail());
@@ -72,5 +93,17 @@ public class UserService {
     public UserModel getUserByUsername(String username) {
         return userRepository.findUserModelByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found with username " + username));
+    }
+
+    public boolean isAdmin(Long userId) {
+        UserModel userModel = getUserById(userId);
+        String role = "";
+        for (ERole e : userModel.getRoles()){
+            role = String.valueOf(e);
+        }
+        if(role.equals("ROLE_USER")){
+            return false;
+        }
+        return true;
     }
 }

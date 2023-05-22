@@ -10,7 +10,7 @@ public class CommentFacade {
     public CommentDTO commentToCommentDTO(Comment comment) {
         CommentDTO commentDTO = new CommentDTO();
         commentDTO.setCommentId(comment.getCommentId());
-        commentDTO.setUser(comment.getUser());
+        commentDTO.setUsername(comment.getUsername());
         commentDTO.setCommentText(comment.getCommentText());
 
         return commentDTO;
