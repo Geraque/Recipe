@@ -33,7 +33,7 @@ public class RecipeFacade {
     }
 
     public ByteArrayResource exportRecipesToExcel(List<Recipe> recipes) {
-        String[] header = {"Id", "Recipe Name", "Description", "Nutrition", "Likes"};
+        String[] header = {"Id", "Recipe Name", "Description", "Calories", "Fat","Proteins","Carbs", "Likes"};
 
         try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             Sheet sheet = workbook.createSheet("Recipes");
@@ -53,7 +53,11 @@ public class RecipeFacade {
                 row.createCell(0).setCellValue(recipe.getRecipeId());
                 row.createCell(1).setCellValue(recipe.getRecipeName());
                 row.createCell(2).setCellValue(recipe.getDescription());
-                row.createCell(4).setCellValue(recipe.getLikes());
+                row.createCell(3).setCellValue(recipe.getRecipeNutrition().getCalories());
+                row.createCell(4).setCellValue(recipe.getRecipeNutrition().getFat());
+                row.createCell(5).setCellValue(recipe.getRecipeNutrition().getProteins());
+                row.createCell(6).setCellValue(recipe.getRecipeNutrition().getCarbs());
+                row.createCell(7).setCellValue(recipe.getLikes());
             }
 
             workbook.write(byteArrayOutputStream);
