@@ -48,4 +48,10 @@ public class FollowerController {
         boolean check = followerService.isFollowing(Long.parseLong(followerId), userId);
         return new ResponseEntity<>(check, HttpStatus.OK);
     }
+
+    @PostMapping("/countFollow/{userId}")
+    public ResponseEntity<Long> countFollow(@PathVariable("userId") Long userId) throws IOException {
+        Long countFollow = followerService.countFollow(userId);
+        return new ResponseEntity<>(countFollow, HttpStatus.OK);
+    }
 }

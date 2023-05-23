@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -47,4 +48,14 @@ public class FollowerService {
         return followerRepository.findByFollowingIdAndUserId(followerId, userId)
                 .orElse(null);
     }
+
+    public List<Follower> getFollowerByUserId(Long userId) {
+        return followerRepository.findAllByUserId(userId);
+    }
+    public Long countFollow(Long userId) throws IOException {
+        List<Follower> followers = getFollowerByUserId(userId);
+        return (long) followers.size();
+    }
+
+
 }
