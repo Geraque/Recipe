@@ -106,6 +106,11 @@ public class RecipeService {
                 .orElseThrow(() -> new RecipeNotFoundException("Recipe cannot be found for username: " + user.getEmail()));
     }
 
+    public Recipe getRecipeById2(Long recipeId) {
+        return recipeRepository.findRecipeByRecipeId(recipeId)
+                .orElseThrow(() -> new RecipeNotFoundException("Recipe cannot be found for recipeId: " + recipeId));
+    }
+
     public List<Recipe> getAllRecipeForUser(Principal principal) {
         UserModel user = getUserByPrincipal(principal);
         return recipeRepository.findAllByUserOrderByDateCreatedDesc(user);
@@ -147,7 +152,7 @@ public class RecipeService {
     }
 
     public void deleteRecipe(Long recipeId, Principal principal) {
-        Recipe recipe = getRecipeById(recipeId, principal);
+        Recipe recipe = getRecipeById2(recipeId);
         Optional<ImageModel> imageModel = imageRepository.findByRecipeId(recipe.getRecipeId());
         Optional<RecipeNutrition> nutrition = Optional.ofNullable(recipe.getRecipeNutrition());
         List<RecipeSave> saves =  saveRepository.findAllByRecipeId(recipeId);

@@ -75,6 +75,14 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public UserModel updateUserByAdmin(UserDTO userDTO) {
+        UserModel user = getUserById(userDTO.getUserId());
+        user.setName(userDTO.getFirstname());
+        user.setLastname(userDTO.getLastname());
+
+        return userRepository.save(user);
+    }
+
     public UserModel getCurrentUser(Principal principal) {
         return getUserByPrincipal(principal);
     }

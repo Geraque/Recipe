@@ -61,6 +61,17 @@ public class UserController {
         UserDTO userUpdated = userFacade.userModelToUserDTO(user);
         return new ResponseEntity<>(userUpdated, HttpStatus.OK);
     }
+    @CrossOrigin
+    @PostMapping("/updateByAdmin")
+    public ResponseEntity<Object> updateUserByAdmin(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
+        ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(bindingResult);
+        if (!ObjectUtils.isEmpty(errors)) return errors;
+
+        UserModel user = userService.updateUserByAdmin(userDTO);
+
+        UserDTO userUpdated = userFacade.userModelToUserDTO(user);
+        return new ResponseEntity<>(userUpdated, HttpStatus.OK);
+    }
 
     @CrossOrigin
     @PostMapping("/isAdmin/{userId}")
